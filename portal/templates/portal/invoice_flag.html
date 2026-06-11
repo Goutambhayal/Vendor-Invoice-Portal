@@ -1,0 +1,164 @@
+{% extends "portal/base.html" %}
+{% load static %}
+
+{% block title %}Invoice Manual Approval Flag — Vendor Invoice Intelligence Portal{% endblock %}
+
+{% block content %}
+
+<h2 class="section-title">🚨 Invoice Manual Approval Prediction</h2>
+<hr class="section-divider" />
+
+<div class="objective-card">
+  <strong>Objective:</strong><br />
+  Predict whether a vendor invoice should be <strong>flagged for manual approval</strong>
+  based on abnormal cost, freight, or delivery patterns.
+</div>
+
+<!-- Prediction Form -->
+<div class="form-card">
+  <form method="post" action="{% url 'invoice_flag' %}" id="invoice-flag-form">
+    {% csrf_token %}
+
+    <div class="form-grid form-grid-3">
+
+      <!-- Column 1 -->
+      <div class="form-group">
+        <label class="form-label" for="{{ form.invoice_quantity.id_for_label }}">
+          {{ form.invoice_quantity.label }}
+        </label>
+        <input
+          type="number"
+          id="{{ form.invoice_quantity.id_for_label }}"
+          name="{{ form.invoice_quantity.html_name }}"
+          value="{{ form.invoice_quantity.value|default:'50' }}"
+          min="1"
+          class="form-control {% if form.invoice_quantity.errors %}is-invalid{% endif %}"
+          placeholder="e.g. 50"
+        />
+        {% if form.invoice_quantity.errors %}
+          <div class="invalid-feedback">{{ form.invoice_quantity.errors|join:", " }}</div>
+        {% endif %}
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="{{ form.freight.id_for_label }}">
+          {{ form.freight.label }}
+        </label>
+        <input
+          type="number"
+          id="{{ form.freight.id_for_label }}"
+          name="{{ form.freight.html_name }}"
+          value="{{ form.freight.value|default:'1.73' }}"
+          min="0"
+          step="0.01"
+          class="form-control {% if form.freight.errors %}is-invalid{% endif %}"
+          placeholder="e.g. 1.73"
+        />
+        {% if form.freight.errors %}
+          <div class="invalid-feedback">{{ form.freight.errors|join:", " }}</div>
+        {% endif %}
+      </div>
+
+      <!-- Column 2 -->
+      <div class="form-group">
+        <label class="form-label" for="{{ form.invoice_dollars.id_for_label }}">
+          {{ form.invoice_dollars.label }}
+        </label>
+        <input
+          type="number"
+          id="{{ form.invoice_dollars.id_for_label }}"
+          name="{{ form.invoice_dollars.html_name }}"
+          value="{{ form.invoice_dollars.value|default:'352.95' }}"
+          min="1"
+          step="0.01"
+          class="form-control {% if form.invoice_dollars.errors %}is-invalid{% endif %}"
+          placeholder="e.g. 352.95"
+        />
+        {% if form.invoice_dollars.errors %}
+          <div class="invalid-feedback">{{ form.invoice_dollars.errors|join:", " }}</div>
+        {% endif %}
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="{{ form.total_item_quantity.id_for_label }}">
+          {{ form.total_item_quantity.label }}
+        </label>
+        <input
+          type="number"
+          id="{{ form.total_item_quantity.id_for_label }}"
+          name="{{ form.total_item_quantity.html_name }}"
+          value="{{ form.total_item_quantity.value|default:'162' }}"
+          min="1"
+          class="form-control {% if form.total_item_quantity.errors %}is-invalid{% endif %}"
+          placeholder="e.g. 162"
+        />
+        {% if form.total_item_quantity.errors %}
+          <div class="invalid-feedback">{{ form.total_item_quantity.errors|join:", " }}</div>
+        {% endif %}
+      </div>
+
+      <!-- Column 3 -->
+      <div class="form-group">
+        <label class="form-label" for="{{ form.total_item_dollars.id_for_label }}">
+          {{ form.total_item_dollars.label }}
+        </label>
+        <input
+          type="number"
+          id="{{ form.total_item_dollars.id_for_label }}"
+          name="{{ form.total_item_dollars.html_name }}"
+          value="{{ form.total_item_dollars.value|default:'2476.00' }}"
+          min="1"
+          step="0.01"
+          class="form-control {% if form.total_item_dollars.errors %}is-invalid{% endif %}"
+          placeholder="e.g. 2476.00"
+        />
+        {% if form.total_item_dollars.errors %}
+          <div class="invalid-feedback">{{ form.total_item_dollars.errors|join:", " }}</div>
+        {% endif %}
+      </div>
+
+    </div>
+
+    <button type="submit" class="btn-predict" id="btn-evaluate-invoice">
+      🧠 Evaluate Invoice Risk
+    </button>
+  </form>
+</div>
+
+<!-- Result -->
+{% if error %}
+  <div class="alert-error" id="invoice-error">
+    ⚠️ {{ error }}
+  </div>
+{% endif %}
+
+{% if flag_result %}
+  <div class="result-section" id="invoice-result">
+    {% if is_flagged %}
+      <div class="result-danger">
+        <div class="result-icon">🚨</div>
+        <div>
+          <div class="result-label">Invoice Risk Assessment</div>
+          <div class="result-value-text">Invoice requires MANUAL APPROVAL</div>
+          <div class="result-sub">
+            This invoice has been flagged due to abnormal cost, freight, or delivery patterns.
+            Please review before processing.
+          </div>
+        </div>
+      </div>
+    {% else %}
+      <div class="result-success">
+        <div class="result-icon">✅</div>
+        <div>
+          <div class="result-label">Invoice Risk Assessment</div>
+          <div class="result-value-text">Invoice is SAFE for Auto-Approval</div>
+          <div class="result-sub">
+            No anomalies detected. This invoice can be processed automatically.
+          </div>
+        </div>
+      </div>
+    {% endif %}
+  </div>
+{% endif %}
+
+{% endblock %}

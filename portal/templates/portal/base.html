@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Vendor Invoice Intelligence Portal — AI-Driven Freight Cost Prediction & Invoice Risk Flagging" />
+  <title>{% block title %}Vendor Invoice Intelligence Portal{% endblock %}</title>
+
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'portal/style.css' %}" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📦</text></svg>" />
+</head>
+<body>
+
+<div class="layout">
+
+  <!-- ===== SIDEBAR ===== -->
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <span class="brand-icon">📦</span>
+      <span class="brand-text">Vendor Invoice<br>Intelligence</span>
+    </div>
+
+    <p class="sidebar-section-title">🔍 Model Selection</p>
+    <ul class="nav-list">
+      <li class="nav-item">
+        <a href="{% url 'freight' %}" class="{% if active_page == 'freight' %}active{% endif %}">
+          <span class="nav-icon">🚚</span>
+          Freight Cost Prediction
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="{% url 'invoice_flag' %}" class="{% if active_page == 'invoice_flag' %}active{% endif %}">
+          <span class="nav-icon">🚨</span>
+          Invoice Manual Approval Flag
+        </a>
+      </li>
+    </ul>
+
+    <div class="sidebar-impact">
+      <h4>Business Impact</h4>
+      <ul>
+        <li><span>📉</span> Improved cost forecasting</li>
+        <li><span>🧾</span> Reduced invoice fraud &amp; anomalies</li>
+        <li><span>⚙️</span> Faster finance operations</li>
+      </ul>
+    </div>
+  </aside>
+
+  <!-- ===== MAIN CONTENT ===== -->
+  <div class="main-content">
+
+    <!-- Page Header -->
+    <header class="page-header">
+      <div class="header-badge">
+        <span class="pulse-dot"></span>
+        AI-Powered · Live Inference
+      </div>
+      <h1><span class="emoji">📦</span> Vendor Invoice Intelligence Portal</h1>
+      <p class="subtitle">AI-Driven Freight Cost Prediction &amp; Invoice Risk Flagging</p>
+      <p class="description">
+        This internal analytics portal leverages machine learning to
+        <strong>forecast freight costs accurately</strong>,
+        <strong>detect risky or abnormal vendor invoices</strong>, and
+        <strong>reduce financial leakage and manual workload</strong>.
+      </p>
+      <div class="header-features">
+        <span class="feature-chip">🤖 Machine Learning</span>
+        <span class="feature-chip">📊 Real-time Prediction</span>
+        <span class="feature-chip">🛡️ Risk Detection</span>
+        <span class="feature-chip">💰 Cost Forecasting</span>
+      </div>
+    </header>
+
+    <!-- Page Body -->
+    <main class="content-body">
+      {% block content %}{% endblock %}
+    </main>
+
+  </div><!-- /main-content -->
+
+</div><!-- /layout -->
+
+</body>
+</html>

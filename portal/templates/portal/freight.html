@@ -1,0 +1,70 @@
+{% extends "portal/base.html" %}
+{% load static %}
+
+{% block title %}Freight Cost Prediction — Vendor Invoice Intelligence Portal{% endblock %}
+
+{% block content %}
+
+<h2 class="section-title">🚚 Freight Cost Prediction</h2>
+<hr class="section-divider" />
+
+<div class="objective-card">
+  <strong>Objective:</strong><br />
+  Predict freight cost for a vendor invoice using <strong>Invoice Dollars</strong>
+  to support budgeting, forecasting, and vendor negotiations.
+</div>
+
+<!-- Prediction Form -->
+<div class="form-card">
+  <form method="post" action="{% url 'freight' %}" id="freight-form">
+    {% csrf_token %}
+
+    <div class="form-grid form-grid-2">
+      <!-- Invoice Dollars -->
+      <div class="form-group">
+        <label class="form-label" for="{{ form.dollars.id_for_label }}">
+          {{ form.dollars.label }}
+        </label>
+        <input
+          type="number"
+          id="{{ form.dollars.id_for_label }}"
+          name="{{ form.dollars.html_name }}"
+          value="{{ form.dollars.value|default:'18500.00' }}"
+          min="1"
+          step="0.01"
+          class="form-control {% if form.dollars.errors %}is-invalid{% endif %}"
+          placeholder="e.g. 18500.00"
+        />
+        {% if form.dollars.errors %}
+          <div class="invalid-feedback">{{ form.dollars.errors|join:", " }}</div>
+        {% endif %}
+      </div>
+    </div>
+
+    <button type="submit" class="btn-predict" id="btn-predict-freight">
+      🔮 Predict Freight Cost
+    </button>
+  </form>
+</div>
+
+<!-- Result -->
+{% if error %}
+  <div class="alert-error" id="freight-error">
+    ⚠️ {{ error }}
+  </div>
+{% endif %}
+
+{% if prediction is not None %}
+  <div class="result-section" id="freight-result">
+    <div class="result-success">
+      <div class="result-icon">📊</div>
+      <div>
+        <div class="result-label">Estimated Freight Cost</div>
+        <div class="result-value">${{ prediction|floatformat:2 }}</div>
+        <div class="result-sub">Prediction completed successfully.</div>
+      </div>
+    </div>
+  </div>
+{% endif %}
+
+{% endblock %}
